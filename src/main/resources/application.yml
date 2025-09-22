@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: User service
+auth:
+  token-generator:
+    type: jwt
+    secret-key-file: classpath:local/secrets/local.private.key

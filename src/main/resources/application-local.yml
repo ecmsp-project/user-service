@@ -1,0 +1,3 @@
+user:
+  repository:
+    type: in-memory
