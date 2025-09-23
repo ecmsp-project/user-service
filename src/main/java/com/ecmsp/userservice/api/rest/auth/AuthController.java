@@ -1,4 +1,4 @@
-package com.ecmsp.userservice.api.auth;
+package com.ecmsp.userservice.api.rest.auth;
 
 import com.ecmsp.userservice.auth.domain.AuthFacade;
 import com.ecmsp.userservice.auth.domain.AuthenticationResult;

@@ -23,7 +23,6 @@ class DbUserRepository implements UserRepository {
         userEntityRepository.save(userMapper.toUserEntity(user));
     }
 
-    //TODO: should all these finds be transactional?
     @Override
     public Optional<User> findById(UserId userId) {
         return userEntityRepository.findById(userId.value())
