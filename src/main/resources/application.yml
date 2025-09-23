@@ -1,7 +1,18 @@
 spring:
   application:
     name: User service
+  jpa:
+    hibernate.ddl-auto: create # TODO: set to none once flyway integration is finished
+    properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/user-service-db
+    username: admin
+    password: admin
 auth:
   token-generator:
     type: jwt
     secret-key-file: classpath:local/secrets/local.private.key
+user:
+  repository:
+    type: db

@@ -11,11 +11,11 @@ public class UserFacade {
         this.userRepository = userRepository;
     }
 
-    public User createUser(UserToCreate userToCreate){
+    public void createUser(UserToCreate userToCreate){
         UserId userId = new UserId(UUID.randomUUID());
         String hashedPassword = passwordHasher.hash(userToCreate.password());
         User user = new User(userId, userToCreate.login(), hashedPassword);
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 
     public Optional<User> findUserById(UserId userId){
