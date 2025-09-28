@@ -20,3 +20,6 @@ auth:
 user:
   repository:
     type: db
+#for testing
+server:
+  port: 8500

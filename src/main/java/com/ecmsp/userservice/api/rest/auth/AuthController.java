@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthFacade authFacade;
@@ -19,6 +19,7 @@ public class AuthController {
     }
 
 
+    //TODO: reconsider rename to login
     @PostMapping("/authenticate")
     public ResponseEntity<AuthResponseDto> authenticate(@RequestBody AuthRequest request) {
         AuthenticationResult result = authFacade.authenticate(request.login(), request.password());
@@ -27,4 +28,5 @@ public class AuthController {
             case AuthenticationResult.Failure ignored -> ResponseEntity.badRequest().build();
         };
     }
+
 }
