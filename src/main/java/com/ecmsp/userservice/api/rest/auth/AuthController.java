@@ -18,8 +18,6 @@ public class AuthController {
         this.authFacade = authFacade;
     }
 
-
-    //TODO: reconsider rename to login
     @PostMapping("/authenticate")
     public ResponseEntity<AuthResponseDto> authenticate(@RequestBody AuthRequest request) {
         AuthenticationResult result = authFacade.authenticate(request.login(), request.password());

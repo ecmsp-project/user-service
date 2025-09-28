@@ -13,7 +13,7 @@
 
 ### Create User
 ```
-POST http://localhost:8080/api/users
+POST http://localhost:8500/api/users
 Content-Type: application/json
 
 {
@@ -24,7 +24,7 @@ Content-Type: application/json
 
 ### Authenticate User
 ```
-POST http://localhost:8080/auth/authenticate
+POST http://localhost:8500/api/auth/authenticate
 Content-Type: application/json
 
 {
