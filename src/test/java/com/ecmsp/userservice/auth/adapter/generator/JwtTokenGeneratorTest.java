@@ -46,7 +46,6 @@ class JwtTokenGeneratorTest {
         User user = new User(new UserId(userId), login, "hashedPassword");
 
         Token token = jwtTokenGenerator.generate(user);
-        System.out.println("Generated Token: " + token.value());
 
         assertNotNull(token);
         assertNotNull(token.value());
