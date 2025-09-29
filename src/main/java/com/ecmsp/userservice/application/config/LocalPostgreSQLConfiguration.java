@@ -23,7 +23,7 @@ public class LocalPostgreSQLConfiguration {
                                 .withName("postgres-user-db")
                                 .getHostConfig().withPortBindings(
                                         new PortBinding(
-                                                /* hostPort = */ Ports.Binding.bindPort(5432),
+                                                /* hostPort = */ Ports.Binding.bindPort(9500),
                                                 /* containerPort = */ new ExposedPort(5432)
                                         )
                                 )
