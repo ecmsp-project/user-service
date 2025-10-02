@@ -19,10 +19,10 @@ public class AuthController {
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthResponseDto> authenticate(@RequestBody AuthRequest request) {
+    public ResponseEntity<AuthResponse> authenticate(@RequestBody AuthRequest request) {
         AuthenticationResult result = authFacade.authenticate(request.login(), request.password());
         return switch (result) {
-            case AuthenticationResult.Success success -> ResponseEntity.ok(new AuthResponseDto(success.token().value()));
+            case AuthenticationResult.Success success -> ResponseEntity.ok(new AuthResponse(success.token().value()));
             case AuthenticationResult.Failure ignored -> ResponseEntity.badRequest().build();
         };
     }
