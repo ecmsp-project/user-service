@@ -7,12 +7,13 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 class InMemoryUserRepository implements UserRepository {
     private final Map<UserId, User> users = Map.of(
             new UserId(UUID.fromString("3d1af02a-bba2-4df1-b551-e944bb60bc94")),
-            new User(new UserId(UUID.fromString("3d1af02a-bba2-4df1-b551-e944bb60bc94")), "testuser", BCrypt.hashpw("testpassword", BCrypt.gensalt()))
+            new User(new UserId(UUID.fromString("3d1af02a-bba2-4df1-b551-e944bb60bc94")), "testuser", BCrypt.hashpw("testpassword", BCrypt.gensalt()), Set.of())
     );
 
     @Override

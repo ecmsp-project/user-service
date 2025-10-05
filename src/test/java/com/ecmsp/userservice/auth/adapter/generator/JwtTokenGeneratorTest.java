@@ -15,6 +15,7 @@ import java.security.PublicKey;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -43,7 +44,7 @@ class JwtTokenGeneratorTest {
     void shouldGenerateValidJwtToken() {
         UUID userId = UUID.fromString("123e4567-e89b-12d3-a456-426614174001");
         String login = "andy";
-        User user = new User(new UserId(userId), login, "hashedPassword");
+        User user = new User(new UserId(userId), login, "hashedPassword", Set.of());
 
         Token token = jwtTokenGenerator.generate(user);
 
@@ -56,7 +57,7 @@ class JwtTokenGeneratorTest {
     void shouldIncludeCorrectSubjectInToken() {
         UUID userId = UUID.randomUUID();
         String login = "testuser";
-        User user = new User(new UserId(userId), login, "hashedPassword");
+        User user = new User(new UserId(userId), login, "hashedPassword", Set.of());
 
         Token token = jwtTokenGenerator.generate(user);
 
@@ -68,7 +69,7 @@ class JwtTokenGeneratorTest {
     void shouldIncludeLoginClaimInToken() {
         UUID userId = UUID.randomUUID();
         String login = "testuser";
-        User user = new User(new UserId(userId), login, "hashedPassword");
+        User user = new User(new UserId(userId), login, "hashedPassword", Set.of());
 
         Token token = jwtTokenGenerator.generate(user);
 
@@ -79,7 +80,7 @@ class JwtTokenGeneratorTest {
     @Test
     void shouldSetCorrectIssuedAtTime() {
         UUID userId = UUID.randomUUID();
-        User user = new User(new UserId(userId), "testuser", "hashedPassword");
+        User user = new User(new UserId(userId), "testuser", "hashedPassword", Set.of());
 
         Token token = jwtTokenGenerator.generate(user);
 
@@ -92,7 +93,7 @@ class JwtTokenGeneratorTest {
     @Test
     void shouldSetExpirationTimeOneHourFromIssuedAt() {
         UUID userId = UUID.randomUUID();
-        User user = new User(new UserId(userId), "testuser", "hashedPassword");
+        User user = new User(new UserId(userId), "testuser", "hashedPassword", Set.of());
 
         Token token = jwtTokenGenerator.generate(user);
 
@@ -105,7 +106,7 @@ class JwtTokenGeneratorTest {
     @Test
     void shouldSignTokenWithProvidedPrivateKey() {
         UUID userId = UUID.randomUUID();
-        User user = new User(new UserId(userId), "testuser", "hashedPassword");
+        User user = new User(new UserId(userId), "testuser", "hashedPassword", Set.of());
 
         Token token = jwtTokenGenerator.generate(user);
 
@@ -120,7 +121,7 @@ class JwtTokenGeneratorTest {
     @Test
     void shouldThrowExceptionWhenVerifyingWithWrongKey() throws Exception {
         UUID userId = UUID.randomUUID();
-        User user = new User(new UserId(userId), "testuser", "hashedPassword");
+        User user = new User(new UserId(userId), "testuser", "hashedPassword", Set.of());
 
         Token token = jwtTokenGenerator.generate(user);
 
@@ -137,8 +138,8 @@ class JwtTokenGeneratorTest {
 
     @Test
     void shouldGenerateDifferentTokensForDifferentUsers() {
-        User user1 = new User(new UserId(UUID.randomUUID()), "user1", "password1");
-        User user2 = new User(new UserId(UUID.randomUUID()), "user2", "password2");
+        User user1 = new User(new UserId(UUID.randomUUID()), "user1", "password1", Set.of());
+        User user2 = new User(new UserId(UUID.randomUUID()), "user2", "password2", Set.of());
 
         Token token1 = jwtTokenGenerator.generate(user1);
         Token token2 = jwtTokenGenerator.generate(user2);
@@ -149,7 +150,7 @@ class JwtTokenGeneratorTest {
     @Test
     void shouldGenerateDifferentTokensAtDifferentTimes() {
         UUID userId = UUID.randomUUID();
-        User user = new User(new UserId(userId), "testuser", "hashedPassword");
+        User user = new User(new UserId(userId), "testuser", "hashedPassword", Set.of());
 
         Token token1 = jwtTokenGenerator.generate(user);
 
@@ -163,7 +164,7 @@ class JwtTokenGeneratorTest {
     @Test
     void shouldGenerateCompactJwtFormat() {
         UUID userId = UUID.randomUUID();
-        User user = new User(new UserId(userId), "testuser", "hashedPassword");
+        User user = new User(new UserId(userId), "testuser", "hashedPassword", Set.of());
 
         Token token = jwtTokenGenerator.generate(user);
 
