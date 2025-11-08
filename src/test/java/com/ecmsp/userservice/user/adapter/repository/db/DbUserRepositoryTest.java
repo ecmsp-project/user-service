@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,13 +26,15 @@ class DbUserRepositoryTest {
     private static final User USER_1 = new User(
         /* id = */ USER_1_ID,
         /* login = */ "user1",
-        /* passwordHash = */ "hashedPassword1"
+        /* passwordHash = */ "hashedPassword1",
+        /* roles = */ Set.of()
     );
 
     private static final User USER_2 = new User(
         /* id = */ USER_2_ID,
         /* login = */ "user2",
-        /* passwordHash = */ "hashedPassword2"
+        /* passwordHash = */ "hashedPassword2",
+            Set.of()
     );
 
     @Autowired
@@ -95,6 +98,7 @@ class DbUserRepositoryTest {
                 .userId(USER_1_ID.value())
                 .login("user1")
                 .password("hashedPassword1")
+                .roles(Set.of())
                 .build()
         );
 
@@ -117,6 +121,7 @@ class DbUserRepositoryTest {
                 .userId(USER_1_ID.value())
                 .login("user1")
                 .password("hashedPassword1")
+                .roles(Set.of())
                 .build()
         );
 
@@ -138,6 +143,7 @@ class DbUserRepositoryTest {
                 .userId(USER_1_ID.value())
                 .login("user1")
                 .password("hashedPassword1")
+                .roles(Set.of())
                 .build()
         );
 
@@ -181,6 +187,7 @@ class DbUserRepositoryTest {
                 .userId(USER_1_ID.value())
                 .login("user1")
                 .password("hashedPassword1")
+                .roles(Set.of())
                 .build()
         );
         testEntityManager.persist(
@@ -188,6 +195,7 @@ class DbUserRepositoryTest {
                 .userId(USER_2_ID.value())
                 .login("user2")
                 .password("hashedPassword2")
+                .roles(Set.of())
                 .build()
         );
         testEntityManager.flush();

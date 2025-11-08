@@ -1,5 +1,7 @@
 package com.ecmsp.userservice.user.domain;
 
-public record User(UserId id, String login, String passwordHash) {
+import java.util.Set;
+
+public record User(UserId id, String login, String passwordHash, Set<Role> roles) {
 
 }

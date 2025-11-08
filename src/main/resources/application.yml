@@ -16,10 +16,17 @@ spring:
 auth:
   token-generator:
     type: jwt
-    secret-key-file: classpath:local/secrets/local.private.key
+    secret-key-file: classpath:local/secrets/local.private.pkcs8.key
 user:
   repository:
     type: db
 
+
 server:
   port: 8500
+
+grpc:
+  server:
+    port: 7500
+    security:
+      enabled: false # Set to true to enable TLS
