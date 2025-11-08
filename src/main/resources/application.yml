@@ -16,7 +16,7 @@ spring:
 auth:
   token-generator:
     type: jwt
-    secret-key-file: classpath:local/secrets/local.private.pkcs8.key
+    secret-key-file: classpath:local/secrets/local.private.key
 user:
   repository:
     type: db
