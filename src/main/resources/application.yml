@@ -2,7 +2,7 @@ spring:
   application:
     name: User service
   jpa:
-    hibernate.ddl-auto: none # TODO: set to none once flyway integration is finished
+    hibernate.ddl-auto: validate
     properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
   datasource:
