@@ -3,6 +3,7 @@ package com.ecmsp.userservice.user.adapter.repository.db;
 import com.ecmsp.userservice.user.domain.Role;
 import com.ecmsp.userservice.user.domain.User;
 import com.ecmsp.userservice.user.domain.UserId;
+import com.ecmsp.userservice.user.domain.UserView;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,6 +25,18 @@ class UserEntityMapper {
                 new UserId(entity.getUserId()),
                 entity.getLogin(),
                 entity.getPassword(),
+                roles
+        );
+    }
+
+    public UserView toUserView(UserEntity entity) {
+        Set<Role> roles = entity.getRoles().stream()
+                .map(roleEntityMapper::toRole)
+                .collect(Collectors.toSet());
+
+        return new UserView(
+                new UserId(entity.getUserId()),
+                entity.getLogin(),
                 roles
         );
     }

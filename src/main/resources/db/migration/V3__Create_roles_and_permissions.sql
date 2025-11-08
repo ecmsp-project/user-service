@@ -25,14 +25,11 @@ CREATE TABLE user_roles (
 
 -- Insert predefined permissions
 INSERT INTO permissions (permission_name) VALUES
-    ('READ_PRODUCTS'),
     ('WRITE_PRODUCTS'),
     ('DELETE_PRODUCTS'),
     ('READ_ORDERS'),
     ('WRITE_ORDERS'),
     ('CANCEL_ORDERS'),
-    ('READ_CARTS'),
-    ('WRITE_CARTS'),
     ('MANAGE_USERS'),
     ('MANAGE_ROLES'),
     ('PROCESS_PAYMENTS'),

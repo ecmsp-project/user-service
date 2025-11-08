@@ -94,6 +94,7 @@ class DbUserRepositoryTest {
                 .userId(USER_1_ID.value())
                 .login("user1")
                 .password("hashedPassword1")
+                .roles(Set.of())
                 .build()
         );
 
@@ -116,6 +117,7 @@ class DbUserRepositoryTest {
                 .userId(USER_1_ID.value())
                 .login("user1")
                 .password("hashedPassword1")
+                .roles(Set.of())
                 .build()
         );
 
@@ -137,6 +139,7 @@ class DbUserRepositoryTest {
                 .userId(USER_1_ID.value())
                 .login("user1")
                 .password("hashedPassword1")
+                .roles(Set.of())
                 .build()
         );
 
@@ -180,6 +183,7 @@ class DbUserRepositoryTest {
                 .userId(USER_1_ID.value())
                 .login("user1")
                 .password("hashedPassword1")
+                .roles(Set.of())
                 .build()
         );
         testEntityManager.persist(
@@ -187,6 +191,7 @@ class DbUserRepositoryTest {
                 .userId(USER_2_ID.value())
                 .login("user2")
                 .password("hashedPassword2")
+                .roles(Set.of())
                 .build()
         );
         testEntityManager.flush();

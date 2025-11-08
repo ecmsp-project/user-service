@@ -1,6 +1,7 @@
 package com.ecmsp.userservice.user.domain;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -15,11 +16,12 @@ public class UserFacade {
         this.roleRepository = roleRepository;
     }
 
-    public void createUser(UserToCreate userToCreate){
+    public User createUser(UserToCreate userToCreate){
         UserId userId = new UserId(UUID.randomUUID());
         String hashedPassword = passwordHasher.hash(userToCreate.password());
         User user = new User(userId, userToCreate.login(), hashedPassword, new HashSet<>());
         userRepository.save(user);
+        return user;
     }
 
     public Optional<User> findUserById(UserId userId){
@@ -28,6 +30,25 @@ public class UserFacade {
 
     public Optional<User> findUserByLogin(String login) {
         return userRepository.findByLogin(login);
+    }
+
+    public void updateUserLogin(UserId userId, String newLogin) {
+        userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
+        userRepository.updateLogin(userId, newLogin);
+    }
+
+    public void deleteUser(UserId userId) {
+        userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
+        userRepository.deleteById(userId);
+    }
+
+    public List<UserView> listUsers(String filterLogin) {
+        if (filterLogin == null || filterLogin.isBlank()) {
+            return userRepository.findAll();
+        }
+        return userRepository.findByLoginContaining(filterLogin);
     }
 
     public void assignRoleToUser(UserId userId, RoleId roleId) {
