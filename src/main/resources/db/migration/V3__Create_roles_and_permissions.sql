@@ -51,8 +51,26 @@ INSERT INTO role_permissions (role_id, permission_name) VALUES
     ((SELECT role_id FROM roles WHERE role_name = 'ADMIN'), 'PROCESS_PAYMENTS'),
     ((SELECT role_id FROM roles WHERE role_name = 'ADMIN'), 'REFUND_PAYMENTS');
 
+INSERT INTO role_permissions (role_id, permission_name) VALUES
+    ((SELECT role_id FROM roles WHERE role_name = 'MANAGER'), 'WRITE_PRODUCTS'),
+    ((SELECT role_id FROM roles WHERE role_name = 'MANAGER'), 'READ_ORDERS'),
+    ((SELECT role_id FROM roles WHERE role_name = 'MANAGER'), 'WRITE_ORDERS'),
+    ((SELECT role_id FROM roles WHERE role_name = 'MANAGER'), 'CANCEL_ORDERS'),
+    ((SELECT role_id FROM roles WHERE role_name = 'MANAGER'), 'PROCESS_PAYMENTS');
+
+INSERT INTO role_permissions (role_id, permission_name) VALUES
+    ((SELECT role_id FROM roles WHERE role_name = 'CUSTOMER_SUPPORT'), 'READ_ORDERS'),
+    ((SELECT role_id FROM roles WHERE role_name = 'CUSTOMER_SUPPORT'), 'CANCEL_ORDERS'),
+    ((SELECT role_id FROM roles WHERE role_name = 'CUSTOMER_SUPPORT'), 'REFUND_PAYMENTS');
+
 INSERT INTO user_roles (user_id, role_id) VALUES
     ((SELECT user_id FROM users WHERE login = 'andy'), (SELECT role_id FROM roles WHERE role_name = 'ADMIN'));
+
+INSERT INTO user_roles (user_id, role_id) VALUES
+    ((SELECT user_id FROM users WHERE login = 'john_doe'), (SELECT role_id FROM roles WHERE role_name = 'MANAGER'));
+INSERT INTO user_roles (user_id, role_id) VALUES
+    ((SELECT user_id FROM users WHERE login = 'jane_smith'), (SELECT role_id FROM roles WHERE role_name = 'CUSTOMER_SUPPORT'));
+
 
 -- Create indexes for performance
 CREATE INDEX idx_role_permissions_role_id ON role_permissions(role_id);
