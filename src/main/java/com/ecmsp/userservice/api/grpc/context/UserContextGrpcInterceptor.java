@@ -19,8 +19,10 @@ public class UserContextGrpcInterceptor implements ServerInterceptor {
         UserContextData userContextData = new UserContextData(
                 headers.get(Metadata.Key.of("X-User-ID", Metadata.ASCII_STRING_MARSHALLER)),
                 headers.get(Metadata.Key.of("X-Login", Metadata.ASCII_STRING_MARSHALLER)),
-                Arrays.stream(headers.get(Metadata.Key.of("X-Permissions", Metadata.ASCII_STRING_MARSHALLER))
-                        .split(","))
+                Optional.ofNullable(headers.get(Metadata.Key.of("X-Permissions", Metadata.ASCII_STRING_MARSHALLER)))
+                        .map(perms -> Arrays.asList(perms.split(",")))
+                        .orElseGet(java.util.Collections::emptyList)
+                        .stream()
                         .filter(s -> !s.trim().isBlank())
                         .map(Permission::getPermissionByName)
                         .filter(Optional::isPresent).map(Optional::get)
