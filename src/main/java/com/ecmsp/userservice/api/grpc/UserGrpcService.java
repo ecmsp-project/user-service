@@ -52,7 +52,7 @@ public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
                     .build();
 
             UserContextData userContextData = UserContextGrpcHolder.getUserContext();
-            if(!request.getUserId().equals(userContextData.userId()) || !contextAuthorization.isHimselfOrHasPermission(userContextData,
+            if(!request.getUserId().equals(userContextData.userId()) && !contextAuthorization.isHimselfOrHasPermission(userContextData,
                     request.getUserId(),
                     Permission.READ_USERS)) {
 
@@ -148,7 +148,7 @@ public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
             com.ecmsp.userservice.user.domain.UserId userId = mapper.toDomainUserId(request.getUser().getId());
 
             UserContextData userContextData = UserContextGrpcHolder.getUserContext();
-            if(!userId.value().toString().equals(userContextData.userId()) || !contextAuthorization.isHimselfOrHasPermission(userContextData,
+            if(!userId.value().toString().equals(userContextData.userId()) && !contextAuthorization.isHimselfOrHasPermission(userContextData,
                     userId.value().toString(),
                     Permission.MANAGE_USERS)) {
 
@@ -208,7 +208,7 @@ public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
             com.ecmsp.userservice.user.domain.UserId userId = mapper.toDomainUserId(protoUserId);
 
             UserContextData userContextData = UserContextGrpcHolder.getUserContext();
-            if(!userId.value().toString().equals(userContextData.userId()) || !contextAuthorization.isHimselfOrHasPermission(userContextData,
+            if(!userId.value().toString().equals(userContextData.userId()) && !contextAuthorization.isHimselfOrHasPermission(userContextData,
                     userId.value().toString(),
                     Permission.MANAGE_USERS)) {
 
