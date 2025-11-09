@@ -12,6 +12,12 @@ public class RoleFacade {
     }
 
     public RoleId createRole(RoleToCreate roleToCreate) {
+        // Check if role with this name already exists
+        Optional<Role> existingRole = roleRepository.findByName(roleToCreate.name());
+        if (existingRole.isPresent()) {
+            throw new IllegalArgumentException("Role with name '" + roleToCreate.name() + "' already exists");
+        }
+
         RoleId roleId = new RoleId(UUID.randomUUID());
         Role role = new Role(roleId, roleToCreate.name(), roleToCreate.permissions());
         roleRepository.save(role);
@@ -46,5 +52,25 @@ public class RoleFacade {
 
     public void deleteRole(RoleId roleId) {
         roleRepository.delete(roleId);
+    }
+
+    public void deleteRoleByName(String roleName) {
+        Role role = roleRepository.findByName(roleName)
+                .orElseThrow(() -> new IllegalArgumentException("Role not found: " + roleName));
+        roleRepository.delete(role.id());
+    }
+
+    public void addPermissionToRoleByName(String roleName, Permission permission) {
+        Role role = roleRepository.findByName(roleName)
+                .orElseThrow(() -> new IllegalArgumentException("Role not found: " + roleName));
+        role.addPermission(permission);
+        roleRepository.save(role);
+    }
+
+    public void removePermissionFromRoleByName(String roleName, Permission permission) {
+        Role role = roleRepository.findByName(roleName)
+                .orElseThrow(() -> new IllegalArgumentException("Role not found: " + roleName));
+        role.removePermission(permission);
+        roleRepository.save(role);
     }
 }

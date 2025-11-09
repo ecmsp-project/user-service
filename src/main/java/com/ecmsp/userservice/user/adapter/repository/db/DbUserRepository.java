@@ -63,4 +63,9 @@ class DbUserRepository implements UserRepository {
     public void updateLogin(UserId userId, String newLogin) {
         userEntityRepository.updateLogin(userId.value(), newLogin);
     }
+
+    @Transactional
+    public void upsert(User user) {
+        userEntityRepository.save(userMapper.toUserEntity(user));
+    }
 }

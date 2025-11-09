@@ -22,6 +22,19 @@ public class RoleController {
         this.roleFacade = roleFacade;
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException e) {
+        if (e.getMessage().contains("already exists")) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(new ErrorResponse(e.getMessage()));
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(e.getMessage()));
+    }
+
+    record ErrorResponse(String message) {
+    }
+
     @PostMapping
     public ResponseEntity<RoleResponse> createRole(@RequestBody RoleCreateRequest request) {
         RoleToCreate roleToCreate = new RoleToCreate(request.name(), request.permissions());
@@ -39,9 +52,9 @@ public class RoleController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/{roleId}")
-    public ResponseEntity<RoleResponse> getRoleById(@PathVariable UUID roleId) {
-        return roleFacade.findRoleById(new RoleId(roleId))
+    @GetMapping("/{roleName}")
+    public ResponseEntity<RoleResponse> getRoleByName(@PathVariable String roleName) {
+        return roleFacade.findRoleByName(roleName)
                 .map(role -> new RoleResponse(
                         role.id().value(),
                         role.name(),
@@ -64,28 +77,28 @@ public class RoleController {
         return ResponseEntity.ok(roles);
     }
 
-    @PostMapping("/{roleId}/permissions")
+    @PostMapping("/{roleName}/permissions")
     public ResponseEntity<Void> addPermissionToRole(
-            @PathVariable UUID roleId,
+            @PathVariable String roleName,
             @RequestBody AddPermissionRequest request) {
-        roleFacade.addPermissionToRole(new RoleId(roleId), request.permission());
+        roleFacade.addPermissionToRoleByName(roleName, request.permission());
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{roleId}/permissions/{permission}")
+    @DeleteMapping("/{roleName}/permissions/{permission}")
     public ResponseEntity<Void> removePermissionFromRole(
-            @PathVariable UUID roleId,
+            @PathVariable String roleName,
             @PathVariable String permission) {
-        roleFacade.removePermissionFromRole(
-                new RoleId(roleId),
+        roleFacade.removePermissionFromRoleByName(
+                roleName,
                 com.ecmsp.userservice.user.domain.Permission.valueOf(permission)
         );
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{roleId}")
-    public ResponseEntity<Void> deleteRole(@PathVariable UUID roleId) {
-        roleFacade.deleteRole(new RoleId(roleId));
+    @DeleteMapping("/{roleName}")
+    public ResponseEntity<Void> deleteRole(@PathVariable String roleName) {
+        roleFacade.deleteRoleByName(roleName);
         return ResponseEntity.noContent().build();
     }
 }

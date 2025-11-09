@@ -1,6 +1,5 @@
 package com.ecmsp.userservice.api.grpc;
 
-import com.ecmsp.user.v1.RoleId;
 import com.ecmsp.user.v1.UserId;
 import com.ecmsp.userservice.user.domain.Permission;
 import com.ecmsp.userservice.user.domain.Role;
@@ -31,17 +30,10 @@ public class UserGrpcMapper {
 
     public com.ecmsp.user.v1.Role toProtoRole(Role domainRole) {
         return com.ecmsp.user.v1.Role.newBuilder()
-                .setId(toProtoRoleId(domainRole.id()))
                 .setName(domainRole.name())
                 .addAllPermissions(domainRole.permissions().stream()
                         .map(this::toProtoPermission)
                         .collect(Collectors.toList()))
-                .build();
-    }
-
-    public RoleId toProtoRoleId(com.ecmsp.userservice.user.domain.RoleId domainRoleId) {
-        return RoleId.newBuilder()
-                .setValue(domainRoleId.value().toString())
                 .build();
     }
 

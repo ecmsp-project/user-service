@@ -1,4 +1,8 @@
 package com.ecmsp.userservice.user.domain;
+import com.ecmsp.userservice.user.adapter.repository.db.RoleEntity;
+import com.ecmsp.userservice.user.adapter.repository.db.RoleEntityRepository;
+import com.ecmsp.userservice.user.adapter.repository.db.UserEntity;
+import com.ecmsp.userservice.user.adapter.repository.db.UserEntityRepository;
 
 import java.util.HashSet;
 import java.util.List;
@@ -8,12 +12,14 @@ import java.util.UUID;
 
 public class UserFacade {
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+    private final RoleEntityRepository roleEntityRepository;
+    private final UserEntityRepository userEntityRepository;
     private final PasswordHasher passwordHasher = new PasswordHasher();
 
-    public UserFacade(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserFacade(UserRepository userRepository, RoleEntityRepository roleEntityRepository, UserEntityRepository userEntityRepository) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
+        this.roleEntityRepository = roleEntityRepository;
+        this.userEntityRepository = userEntityRepository;
     }
 
     public User createUser(UserToCreate userToCreate){
@@ -51,26 +57,22 @@ public class UserFacade {
         return userRepository.findByLoginContaining(filterLogin);
     }
 
-    public void assignRoleToUser(UserId userId, RoleId roleId) {
-        User user = userRepository.findById(userId)
+    public void assignRoleToUser(UserId userId, String roleName) {
+        UserEntity user = userEntityRepository.findById(userId.value())
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
-        Role role = roleRepository.findById(roleId)
-                .orElseThrow(() -> new IllegalArgumentException("Role not found: " + roleId));
+        RoleEntity role = roleEntityRepository.findByRoleName(roleName)
+                .orElseThrow(() -> new IllegalArgumentException("Role not found: " + roleName));
 
-        Set<Role> updatedRoles = new HashSet<>(user.roles());
-        updatedRoles.add(role);
-        User updatedUser = new User(user.id(), user.login(), user.passwordHash(), updatedRoles);
-        userRepository.save(updatedUser);
+        user.getRoles().add(role);
+        userEntityRepository.save(user);
     }
 
-    public void removeRoleFromUser(UserId userId, RoleId roleId) {
-        User user = userRepository.findById(userId)
+    public void removeRoleFromUser(UserId userId, String roleName) {
+        UserEntity user = userEntityRepository.findById(userId.value())
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
 
-        Set<Role> updatedRoles = new HashSet<>(user.roles());
-        updatedRoles.removeIf(role -> role.id().equals(roleId));
-        User updatedUser = new User(user.id(), user.login(), user.passwordHash(), updatedRoles);
-        userRepository.save(updatedUser);
+        user.getRoles().removeIf(role -> role.getRoleName().equals(roleName));
+        userEntityRepository.save(user);
     }
 
     public Set<Role> getUserRoles(UserId userId) {
