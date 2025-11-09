@@ -1,6 +1,6 @@
 package com.ecmsp.userservice.api.grpc;
 
-import com.ecmsp.userservice.user.domain.Permission;
+import com.ecmsp.common.userservice.user.domain.Permission;
 import com.ecmsp.userservice.user.domain.RoleToCreate;
 import org.springframework.stereotype.Component;
 

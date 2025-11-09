@@ -1,11 +1,11 @@
 package com.ecmsp.userservice.user.adapter.repository.db;
 
-import com.ecmsp.userservice.user.domain.Permission;
 import com.ecmsp.userservice.user.domain.Role;
 import com.ecmsp.userservice.user.domain.RoleId;
 
 import java.util.Set;
 import java.util.stream.Collectors;
+import com.ecmsp.common.userservice.user.domain.Permission;
 
 class RoleEntityMapper {
 

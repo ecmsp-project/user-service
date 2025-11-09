@@ -3,6 +3,7 @@ package com.ecmsp.userservice.user.domain;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import com.ecmsp.common.userservice.user.domain.Permission;
 
 public class Role {
     private final RoleId id;

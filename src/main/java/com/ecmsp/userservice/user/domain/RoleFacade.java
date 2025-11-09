@@ -3,6 +3,7 @@ package com.ecmsp.userservice.user.domain;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import com.ecmsp.common.userservice.user.domain.Permission;
 
 public class RoleFacade {
     private final RoleRepository roleRepository;

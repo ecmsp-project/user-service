@@ -1,9 +1,8 @@
 package com.ecmsp.userservice.api.grpc.context;
 
 
-import com.ecmsp.userservice.user.domain.Permission;
-
 import java.util.Set;
+import com.ecmsp.common.userservice.user.domain.Permission;
 
 public record UserContextData(String userId,
                               String login,

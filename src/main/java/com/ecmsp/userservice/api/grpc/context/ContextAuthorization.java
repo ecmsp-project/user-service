@@ -1,6 +1,6 @@
 package com.ecmsp.userservice.api.grpc.context;
 
-import com.ecmsp.userservice.user.domain.Permission;
+import com.ecmsp.common.userservice.user.domain.Permission;
 import org.springframework.stereotype.Component;
 
 @Component
