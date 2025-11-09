@@ -4,7 +4,6 @@ package com.ecmsp.userservice.api.rest;
 import com.ecmsp.userservice.api.rest.role.AssignRoleRequest;
 import com.ecmsp.userservice.api.rest.role.RoleResponse;
 import com.ecmsp.userservice.user.domain.Role;
-import com.ecmsp.userservice.user.domain.RoleId;
 import com.ecmsp.userservice.user.domain.UserFacade;
 import com.ecmsp.userservice.user.domain.UserId;
 import com.ecmsp.userservice.user.domain.UserToCreate;
@@ -38,15 +37,15 @@ public class UserController {
     public ResponseEntity<Void> assignRoleToUser(
             @PathVariable UUID userId,
             @RequestBody AssignRoleRequest request) {
-        userFacade.assignRoleToUser(new UserId(userId), new RoleId(request.roleId()));
+        userFacade.assignRoleToUser(new UserId(userId), request.roleName());
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{userId}/roles/{roleId}")
+    @DeleteMapping("/{userId}/roles/{roleName}")
     public ResponseEntity<Void> removeRoleFromUser(
             @PathVariable UUID userId,
-            @PathVariable UUID roleId) {
-        userFacade.removeRoleFromUser(new UserId(userId), new RoleId(roleId));
+            @PathVariable String roleName) {
+        userFacade.removeRoleFromUser(new UserId(userId), roleName);
         return ResponseEntity.ok().build();
     }
 

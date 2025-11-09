@@ -1,23 +1,23 @@
 -- Create permissions table
-CREATE TABLE permissions (
+CREATE TABLE IF NOT EXISTS permissions (
     permission_name VARCHAR(100) PRIMARY KEY
 );
 
 -- Create roles table
-CREATE TABLE roles (
+CREATE TABLE IF NOT EXISTS roles (
     role_id UUID PRIMARY KEY,
     role_name VARCHAR(100) NOT NULL UNIQUE
 );
 
 -- Create role_permissions join table
-CREATE TABLE role_permissions (
+CREATE TABLE IF NOT EXISTS role_permissions (
     role_id UUID REFERENCES roles(role_id) ON DELETE CASCADE,
     permission_name VARCHAR(100) REFERENCES permissions(permission_name) ON DELETE CASCADE,
     PRIMARY KEY (role_id, permission_name)
 );
 
 -- Create user_roles join table
-CREATE TABLE user_roles (
+CREATE TABLE IF NOT EXISTS user_roles (
     user_id UUID REFERENCES users(user_id) ON DELETE CASCADE,
     role_id UUID REFERENCES roles(role_id) ON DELETE CASCADE,
     PRIMARY KEY (user_id, role_id)
