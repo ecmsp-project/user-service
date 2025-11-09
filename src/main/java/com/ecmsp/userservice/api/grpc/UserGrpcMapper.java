@@ -1,10 +1,10 @@
 package com.ecmsp.userservice.api.grpc;
 
 import com.ecmsp.user.v1.UserId;
-import com.ecmsp.userservice.user.domain.Permission;
 import com.ecmsp.userservice.user.domain.Role;
 import com.ecmsp.userservice.user.domain.UserView;
 import org.springframework.stereotype.Component;
+import com.ecmsp.common.userservice.user.domain.Permission;
 
 import java.util.UUID;
 import java.util.stream.Collectors;

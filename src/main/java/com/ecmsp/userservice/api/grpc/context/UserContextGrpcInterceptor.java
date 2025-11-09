@@ -1,12 +1,12 @@
 package com.ecmsp.userservice.api.grpc.context;
 
-import com.ecmsp.userservice.user.domain.Permission;
 import io.grpc.*;
 import net.devh.boot.grpc.server.interceptor.GrpcGlobalServerInterceptor;
 
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import com.ecmsp.common.userservice.user.domain.Permission;
 
 @GrpcGlobalServerInterceptor
 public class UserContextGrpcInterceptor implements ServerInterceptor {

@@ -2,7 +2,6 @@ package com.ecmsp.userservice.auth.adapter.generator;
 
 import com.ecmsp.userservice.auth.domain.Token;
 import com.ecmsp.userservice.auth.domain.TokenGenerator;
-import com.ecmsp.userservice.user.domain.Permission;
 import com.ecmsp.userservice.user.domain.User;
 import io.jsonwebtoken.Jwts;
 
@@ -13,6 +12,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Set;
 import java.util.stream.Collectors;
+import com.ecmsp.common.userservice.user.domain.Permission;
 
 class JwtTokenGenerator implements TokenGenerator {
     private final PrivateKey privateKey;

@@ -9,8 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
+import com.ecmsp.common.userservice.user.domain.Permission;
 
 @RestController
 @RequestMapping("/api/roles")
@@ -91,7 +91,7 @@ public class RoleController {
             @PathVariable String permission) {
         roleFacade.removePermissionFromRoleByName(
                 roleName,
-                com.ecmsp.userservice.user.domain.Permission.valueOf(permission)
+                Permission.valueOf(permission)
         );
         return ResponseEntity.ok().build();
     }
