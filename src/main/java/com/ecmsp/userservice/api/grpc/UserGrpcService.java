@@ -1,11 +1,15 @@
 package com.ecmsp.userservice.api.grpc;
 
 import com.ecmsp.user.v1.*;
+import com.ecmsp.userservice.api.grpc.context.ContextAuthorization;
+import com.ecmsp.userservice.api.grpc.context.UserContextData;
+import com.ecmsp.userservice.api.grpc.context.UserContextGrpcHolder;
 import com.ecmsp.userservice.user.domain.Permission;
 import com.ecmsp.userservice.user.domain.RoleFacade;
 import com.ecmsp.userservice.user.domain.RoleToCreate;
 import com.ecmsp.userservice.user.domain.UserFacade;
 import com.ecmsp.userservice.user.domain.UserView;
+import io.grpc.Context;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
@@ -26,12 +30,18 @@ public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
     private final RoleFacade roleFacade;
     private final UserGrpcMapper mapper;
     private final RoleGrpcMapper roleMapper;
+    private final ContextAuthorization contextAuthorization;
 
-    public UserGrpcService(UserFacade userFacade, RoleFacade roleFacade, UserGrpcMapper mapper, RoleGrpcMapper roleMapper) {
+    public UserGrpcService(UserFacade userFacade,
+                           RoleFacade roleFacade,
+                           UserGrpcMapper mapper,
+                           RoleGrpcMapper roleMapper,
+                           ContextAuthorization contextAuthorization) {
         this.userFacade = userFacade;
         this.roleFacade = roleFacade;
         this.mapper = mapper;
         this.roleMapper = roleMapper;
+        this.contextAuthorization = contextAuthorization;
     }
 
     @Override
@@ -40,6 +50,19 @@ public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
             com.ecmsp.user.v1.UserId protoUserId = com.ecmsp.user.v1.UserId.newBuilder()
                     .setValue(request.getUserId())
                     .build();
+
+            UserContextData userContextData = UserContextGrpcHolder.getUserContext();
+            if(!request.getUserId().equals(userContextData.userId()) || !contextAuthorization.isHimselfOrHasPermission(userContextData,
+                    request.getUserId(),
+                    Permission.READ_USERS)) {
+
+                responseObserver.onError(Status.PERMISSION_DENIED
+                        .withDescription("Permission denied to access user with id: " + request.getUserId()
+                                + "need to be himself or have READ_USERS permission")
+                        .asRuntimeException());
+                return;
+            }
+
             com.ecmsp.userservice.user.domain.UserId userId = mapper.toDomainUserId(protoUserId);
             Optional<com.ecmsp.userservice.user.domain.User> userOptional = userFacade.findUserById(userId);
 
@@ -123,6 +146,19 @@ public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
     public void updateUser(UpdateUserRequest request, StreamObserver<UpdateUserResponse> responseObserver) {
         try {
             com.ecmsp.userservice.user.domain.UserId userId = mapper.toDomainUserId(request.getUser().getId());
+
+            UserContextData userContextData = UserContextGrpcHolder.getUserContext();
+            if(!userId.value().toString().equals(userContextData.userId()) || !contextAuthorization.isHimselfOrHasPermission(userContextData,
+                    userId.value().toString(),
+                    Permission.MANAGE_USERS)) {
+
+                responseObserver.onError(Status.PERMISSION_DENIED
+                        .withDescription("Permission denied to access user with id: " + userId.value()
+                                + " need to be himself or have MANAGE_USERS permission")
+                        .asRuntimeException());
+                return;
+            }
+
             String newLogin = request.getUser().getLogin();
 
             if (newLogin == null || newLogin.isBlank()) {
@@ -170,6 +206,18 @@ public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
                     .setValue(request.getUserId())
                     .build();
             com.ecmsp.userservice.user.domain.UserId userId = mapper.toDomainUserId(protoUserId);
+
+            UserContextData userContextData = UserContextGrpcHolder.getUserContext();
+            if(!userId.value().toString().equals(userContextData.userId()) || !contextAuthorization.isHimselfOrHasPermission(userContextData,
+                    userId.value().toString(),
+                    Permission.MANAGE_USERS)) {
+
+                responseObserver.onError(Status.PERMISSION_DENIED
+                        .withDescription("Permission denied to access user with id: " + userId.value()
+                                + " need to be himself or have MANAGE_USERS permission")
+                        .asRuntimeException());
+                return;
+            }
             userFacade.deleteUser(userId);
 
             DeleteUserResponse response = DeleteUserResponse.newBuilder().build();
@@ -189,6 +237,17 @@ public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
     @Override
     public void listUsers(ListUsersRequest request, StreamObserver<ListUsersResponse> responseObserver) {
         try {
+            UserContextData userContextData = UserContextGrpcHolder.getUserContext();
+            if(!contextAuthorization.hasPermission(
+                    userContextData,
+                    Permission.READ_USERS)) {
+
+                responseObserver.onError(Status.PERMISSION_DENIED
+                        .withDescription("Permission denied to list users, READ_USERS permission required")
+                        .asRuntimeException());
+                return;
+            }
+
             String filterLogin = request.getFilterLogin();
             List<UserView> users = userFacade.listUsers(filterLogin);
 
@@ -214,6 +273,16 @@ public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
     @Override
     public void createRole(CreateRoleRequest request, StreamObserver<CreateRoleResponse> responseObserver) {
         try {
+            UserContextData userContextData = UserContextGrpcHolder.getUserContext();
+            if(!contextAuthorization.hasPermission(
+                    userContextData,
+                    Permission.MANAGE_ROLES)) {
+
+                responseObserver.onError(Status.PERMISSION_DENIED
+                        .withDescription("Permission denied to create role, MANAGE_ROLES permission required")
+                        .asRuntimeException());
+                return;
+            }
             log.info("Creating role: {}", request.getRole().getName());
 
             RoleToCreate roleToCreate = roleMapper.toDomainRoleToCreate(request.getRole());
@@ -253,6 +322,17 @@ public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
     @Override
     public void updateRole(UpdateRoleRequest request, StreamObserver<UpdateRoleResponse> responseObserver) {
         try {
+            UserContextData userContextData = UserContextGrpcHolder.getUserContext();
+            if(!contextAuthorization.hasPermission(
+                    userContextData,
+                    Permission.MANAGE_ROLES)) {
+
+                responseObserver.onError(Status.PERMISSION_DENIED
+                        .withDescription("Permission denied to update role, MANAGE_ROLES permission required")
+                        .asRuntimeException());
+                return;
+            }
+
             String roleName = request.getRole().getName();
             log.info("Updating role: {}", roleName);
 
@@ -308,6 +388,15 @@ public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
     @Override
     public void deleteRole(DeleteRoleRequest request, StreamObserver<DeleteRoleResponse> responseObserver) {
         try {
+            UserContextData userContextData = UserContextGrpcHolder.getUserContext();
+            if(!contextAuthorization.hasPermission(
+                    userContextData,
+                    Permission.MANAGE_ROLES)) {
+                responseObserver.onError(Status.PERMISSION_DENIED
+                        .withDescription("Permission denied to delete role, MANAGE_ROLES permission required")
+                        .asRuntimeException());
+                return;
+            }
             String roleName = request.getRoleId();
             log.info("Deleting role: {}", roleName);
 
@@ -334,6 +423,17 @@ public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
     @Override
     public void listRoles(ListRolesRequest request, StreamObserver<ListRolesResponse> responseObserver) {
         try {
+            UserContextData userContextData = UserContextGrpcHolder.getUserContext();
+            if(!contextAuthorization.hasPermission(
+                    userContextData,
+                    Permission.MANAGE_ROLES)) {
+
+                responseObserver.onError(Status.PERMISSION_DENIED
+                        .withDescription("Permission denied to list roles, MANAGE_ROLES permission required")
+                        .asRuntimeException());
+                return;
+            }
+
             log.info("Listing all roles");
 
             List<com.ecmsp.userservice.user.domain.Role> roles = roleFacade.getAllRoles();
@@ -360,6 +460,16 @@ public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
     @Override
     public void assignRoleToUsers(AssignRoleToUsersRequest request, StreamObserver<AssignRoleToUsersResponse> responseObserver) {
         try {
+            UserContextData userContextData = UserContextGrpcHolder.getUserContext();
+            if(!contextAuthorization.hasPermission(
+                    userContextData,
+                    Permission.MANAGE_ROLES)) {
+                responseObserver.onError(Status.PERMISSION_DENIED
+                        .withDescription("Permission denied to delete role, MANAGE_ROLES permission required")
+                        .asRuntimeException());
+                return;
+            }
+
             String roleName = request.getRoleName();
             log.info("Assigning role {} to {} users", roleName, request.getUserIdsList().size());
 
@@ -396,6 +506,16 @@ public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
     @Override
     public void removeRoleFromUsers(RemoveRoleFromUsersRequest request, StreamObserver<RemoveRoleFromUsersResponse> responseObserver) {
         try {
+            UserContextData userContextData = UserContextGrpcHolder.getUserContext();
+            if(!contextAuthorization.hasPermission(
+                    userContextData,
+                    Permission.MANAGE_ROLES)) {
+                responseObserver.onError(Status.PERMISSION_DENIED
+                        .withDescription("Permission denied to delete role, MANAGE_ROLES permission required")
+                        .asRuntimeException());
+                return;
+            }
+
             String roleName = request.getRoleName();
             log.info("Removing role {} from {} users", roleName, request.getUserIdsList().size());
 
@@ -432,6 +552,25 @@ public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
     @Override
     public void listAllPermissions(ListAllPermissionsRequest request, StreamObserver<ListAllPermissionsResponse> responseObserver) {
         try {
+            UserContextData userContextData = UserContextGrpcHolder.getUserContext();
+            if(!contextAuthorization.hasPermission(
+                    userContextData,
+                    Permission.MANAGE_ROLES)) {
+                responseObserver.onError(Status.PERMISSION_DENIED
+                        .withDescription("Permission denied to delete role, MANAGE_ROLES permission required")
+                        .asRuntimeException());
+                return;
+            }
+
+            if(!contextAuthorization.hasPermission(
+                    UserContextGrpcHolder.getUserContext(),
+                    Permission.MANAGE_ROLES)) {
+
+                responseObserver.onError(Status.PERMISSION_DENIED
+                        .withDescription("Permission denied to list all permissions, MANAGE_ROLES permission required")
+                        .asRuntimeException());
+                return;
+            }
             log.info("Listing all available permissions");
 
             List<String> permissions = Arrays.stream(Permission.values())

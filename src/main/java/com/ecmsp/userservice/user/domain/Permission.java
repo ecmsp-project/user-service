@@ -1,5 +1,10 @@
 package com.ecmsp.userservice.user.domain;
 
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.Optional;
+
+@Slf4j
 public enum Permission {
     // Product permissions
     WRITE_PRODUCTS,
@@ -11,6 +16,7 @@ public enum Permission {
     CANCEL_ORDERS,
 
     // User management permissions
+    READ_USERS,
     MANAGE_USERS,
 
     // Role management permissions
@@ -18,5 +24,15 @@ public enum Permission {
 
     // Payment permissions
     PROCESS_PAYMENTS,
-    REFUND_PAYMENTS
+    REFUND_PAYMENTS;
+
+    public static Optional<Permission> getPermissionByName(String name) {
+        for (Permission permission : Permission.values()) {
+            if (permission.name().equalsIgnoreCase(name)) {
+                return Optional.of(permission);
+            }
+        }
+        log.error("Permission with name {} not found", name);
+        return Optional.empty();
+    }
 }
