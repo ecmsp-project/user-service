@@ -37,9 +37,9 @@ INSERT INTO permissions (permission_name) VALUES
     ('REFUND_PAYMENTS');
 
 INSERT INTO roles (role_id, role_name) VALUES
-    (gen_random_uuid(), 'ADMIN'),
-    (gen_random_uuid(), 'MANAGER'),
-    (gen_random_uuid(), 'CUSTOMER_SUPPORT');
+    (RANDOM_UUID(), 'ADMIN'),
+    (RANDOM_UUID(), 'MANAGER'),
+    (RANDOM_UUID(), 'CUSTOMER_SUPPORT');
 
 INSERT INTO role_permissions (role_id, permission_name) VALUES
     ((SELECT role_id FROM roles WHERE role_name = 'ADMIN'), 'WRITE_PRODUCTS'),
