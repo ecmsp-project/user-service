@@ -138,11 +138,11 @@
 			<version>11.11.2</version>
 			<scope>runtime</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.ecmsp</groupId>
-			<artifactId>protos</artifactId>
-			<version>1.0.0-20251109.190556-51</version>
-		</dependency>
+        <dependency>
+            <groupId>com.ecmsp</groupId>
+            <artifactId>protos</artifactId>
+            <version>1.0.0-20251210.161419-2</version>
+        </dependency>
 	</dependencies>
 
 	<dependencyManagement>
