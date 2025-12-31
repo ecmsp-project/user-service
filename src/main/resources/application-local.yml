@@ -1,9 +1,0 @@
-spring:
-  datasource:
-    url: jdbc:postgresql://localhost:9500/user-service-db
-    username: admin
-    password: admin
-
-user:
-  repository:
-    type: db
